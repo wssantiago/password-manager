@@ -2,8 +2,12 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="09656778-239a-4581-9958-f3ba84dd83e0" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/data/pwm.db" beforeDir="false" afterPath="$PROJECT_DIR$/data/pwm.db" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gui/login/login.py" beforeDir="false" afterPath="$PROJECT_DIR$/gui/login/login.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/gui/sources/sources.py" beforeDir="false" afterPath="$PROJECT_DIR$/gui/sources/sources.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gui/start/start.py" beforeDir="false" afterPath="$PROJECT_DIR$/gui/start/start.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/logo/logo.png" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -26,7 +30,7 @@
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "last_opened_file_path": "C:/Users/wssf/Documents/UFPE/PROJETOS/password-manager/data/data.py",
-    "settings.editor.selected.configurable": "preferences.editor"
+    "settings.editor.selected.configurable": "preferences.lookFeel"
   }
 }]]></component>
   <component name="RunManager" selected="Python.start">

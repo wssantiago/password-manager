@@ -27,7 +27,7 @@ class Login:
 
         self.root = start.root
 
-        self.mainFrame = Frame(self.root)
+        self.mainFrame = Frame(self.root, bg="#41667f")
         self.mainFrame.pack(fill='both', expand=True)
 
         self.initLogo()
@@ -38,57 +38,66 @@ class Login:
 
     def initLogo(self):
         parent = str(Path(os.getcwd()).parent.parent)
-        logo_filename = parent + '/logo/logo.png'
+        logo_filename = parent + '/images/logo.png'
         logo = Image.open(logo_filename)
         logo = logo.resize((280, 280))
         logo = ImageTk.PhotoImage(logo)
-        self.logo_label = Label(self.mainFrame, image=logo)
+        self.logo_label = Label(self.mainFrame, image=logo, bg="#41667f")
         self.logo_label.image = logo
         self.logo_label.pack()
 
     def initData(self):
-        self.loginFrame = Frame(self.mainFrame)
+        self.loginFrame = Frame(self.mainFrame, bg="#41667f")
 
-        self.login_text = Label(self.loginFrame, text='Login: ', font=('RaleWay', 25), padx=20, pady=20)
+        self.login_text = Label(self.loginFrame, text='Login: ', font=('Segoe UI', 18, "bold"), padx=7, pady=18,
+                                bg="#41667f", fg="#ae8349")
         self.login_text.grid(row=0, column=0, sticky='W')
 
         self.login_data = StringVar(self.login_input)
         self.login_data.trace('w', self.account_modified)
-        self.login_input = Entry(self.loginFrame, font=('RaleWay', 25), textvariable=self.login_data)
+        self.login_input = Entry(self.loginFrame, font=('Segoe UI', 18, "bold"), textvariable=self.login_data,
+                                 bg="#a5b1b2", fg="#622424")
         self.login_input.grid(row=0, column=1)
 
-        self.password_text = Label(self.loginFrame, text='Senha: ', font=('RaleWay', 25), padx=20, pady=20)
+        self.password_text = Label(self.loginFrame, text='Senha: ', font=('Segoe UI', 18, "bold"), padx=7, pady=18,
+                                   bg="#41667f", fg="#ae8349")
         self.password_text.grid(row=1, column=0, sticky='W')
 
         self.password_data = StringVar(self.password_input)
         self.password_data.trace('w', self.account_modified)
-        self.password_input = Entry(self.loginFrame, font=('RaleWay', 25), textvariable=self.password_data)
+        self.password_input = Entry(self.loginFrame, font=('Segoe UI', 18, "bold"), textvariable=self.password_data,
+                                    bg="#a5b1b2", fg="#622424")
         self.password_input.grid(row=1, column=1)
 
         self.loginFrame.pack()
 
     def initButtons(self):
-        self.buttonsFrame = Frame(self.mainFrame)
+        self.buttonsFrame = Frame(self.mainFrame, bg="#41667f")
 
         self.confirm_button = Button(self.buttonsFrame,
                                      text='Confirmar',
-                                     font=('RaleWay', 25),
+                                     font=('Segoe UI', 18, "bold"),
                                      state=DISABLED,
-                                     command=self.login)
+                                     command=self.login,
+                                     bg="#622323",
+                                     fg="#ae8349")
         self.confirm_button.pack(side='right')
         self.addUser_button = Button(self.buttonsFrame,
                                      text='Adicionar usuário',
-                                     font=('RaleWay', 25),
+                                     font=('Segoe UI', 18, "bold"),
                                      state=DISABLED,
-                                     command=self.addUser)
+                                     command=self.addUser,
+                                     bg="#622323",
+                                     fg="#ae8349")
         self.addUser_button.pack(side='left')
 
-        self.buttonsFrame.pack(ipady=20, ipadx=20)
+        self.buttonsFrame.pack(ipady=18, ipadx=18)
 
     def account_modified(self, *args):
         if not self.login_data.get() or not self.password_data.get():
             self.confirm_button['state'] = DISABLED
             self.addUser_button['state'] = DISABLED
+
         else:
             login_data = self.login_data.get()
             password_data = self.password_data.get()
@@ -100,6 +109,7 @@ class Login:
                 else:
                     self.confirm_button['state'] = ACTIVE
                     self.addUser_button['state'] = DISABLED
+
 
     def addUser(self):
         self.db.insertUser(self.login_data.get(), self.password_data.get())
@@ -125,5 +135,3 @@ class Login:
         self.buttonsFrame.destroy()
         self.logo_label.destroy()
         self.mainFrame.destroy()
-
-
