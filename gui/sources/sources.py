@@ -105,13 +105,12 @@ class Sources:
         self.table_scroll.config(command=self.table.yview)
 
         style = ttk.Style()
-        # style.theme_use("default")
+        style.theme_use("clam")
         style.configure("Treeview", background="#D3D3D3",
                         foreground="black",
-                        rowheight=25,
-                        fieldbackground="#D3D3D3")
+                        rowheight=25)
         style.configure("Treeview.Heading", font=("RaleWay", 13))
-        # style.map('Treeview', background=[('selected', 'blue')])
+        style.map('Treeview', background=[('selected', '#287EE2')])
 
         self.table['columns'] = ("Lugar", "Login/e-mail", "Senha")
         self.table.column('#0', width=0, stretch=NO)
@@ -125,7 +124,7 @@ class Sources:
         self.table.heading('Senha', text='Senha', anchor=W)
 
         self.table.tag_configure('oddrow', background='white')
-        self.table.tag_configure('evenrow', background="lightblue")
+        self.table.tag_configure('evenrow', background="#DBEAFA")
 
         self.table.bind("<Double-Button-1>", self.editSource)
 
