@@ -8,7 +8,7 @@ from gui.sources.sources import Sources
 
 class Login:
 
-    def __init__(self, tk):
+    def __init__(self, start):
         self.user_added_success = None
         self.password_data = None
         self.login_data = None
@@ -25,7 +25,7 @@ class Login:
         self.db = Data(str(Path(os.getcwd()).parent.parent) + '/data/')
         self.users = self.db.getUsers()
 
-        self.root = tk
+        self.root = start.root
 
         self.mainFrame = Frame(self.root)
         self.mainFrame.pack(fill='both', expand=True)
@@ -114,7 +114,7 @@ class Login:
         self.confirm_button.config(text='Entrando...')
         usr = (self.login_data.get(), self.password_data.get())
         self.destroy()
-        sources = Sources(self.root, usr)
+        sources = Sources(self, usr)
 
     def destroy(self):
         for widget in self.loginFrame.winfo_children():

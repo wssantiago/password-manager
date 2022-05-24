@@ -14,7 +14,7 @@ class Start:
 
         self.root = Tk()
         self.root.title('password-manager')
-        self.root.geometry('720x480')
+        self.root.geometry('720x520+600+200')
         self.root.resizable(True, True)
 
         self.mainFrame = Frame(self.root)
@@ -55,7 +55,7 @@ class Start:
 
         self.mainFrame.destroy()
 
-        login = Login(self.root)
+        login = Login(self)
 
 
 start = Start()

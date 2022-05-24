@@ -80,15 +80,15 @@ class Data:
         self.db.commit()
         self.db.close()
 
-    def insertSourceFromUser(self, source, login, password, user):
+    def insertSourceFromUser(self, data, user):
         self.db = sqlite3.connect(self.path)
         self.cursor = self.db.cursor()
 
         self.cursor.execute("INSERT INTO sources VALUES (:source, :login, :password, :user_login, :user_pw)",
                             {
-                                'source': source,
-                                'login': login,
-                                'password': password,
+                                'source': data[0],
+                                'login': data[1],
+                                'password': data[2],
                                 'user_login': user[0],
                                 'user_pw': user[1]
                             })
@@ -109,11 +109,25 @@ class Data:
         self.db = sqlite3.connect(self.path)
         self.cursor = self.db.cursor()
 
-        self.cursor.execute("DELETE FROM sources WHERE oid=?", str(id))
+        self.cursor.execute("DELETE FROM sources WHERE oid=?", (str(id),))
 
         self.db.commit()
         self.db.close()
 
-# data = Data('')
+    def updateSourceFromUser(self, values, oid):
+        self.db = sqlite3.connect(self.path)
+        self.cursor = self.db.cursor()
 
+        self.cursor.execute('''UPDATE sources
+                            SET source = ? ,
+                                login = ? ,
+                                password = ?
+                            WHERE oid = ?''', (values[0], values[1], values[2], str(oid)))
+
+        self.db.commit()
+        self.db.close()
+
+#data = Data('')
+#for item in data.getAllSourcesById(('wssf', '1234')):
+#    print(item)
 
