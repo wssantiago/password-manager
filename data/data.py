@@ -1,4 +1,5 @@
 import sqlite3
+import rsa
 from pathlib import Path
 import os
 
@@ -9,6 +10,8 @@ class Data:
         self.path = path + 'pwm.db'
         self.db = None
         self.cursor = None
+
+        self.keys = rsa.newkeys(512)
 
     def create_table(self, script):
         self.db = sqlite3.connect(self.path)
@@ -58,7 +61,8 @@ class Data:
         self.db = sqlite3.connect(self.path)
         self.cursor = self.db.cursor()
 
-        sqlcmd = 'SELECT *, oid FROM sources WHERE user_login = \'{0}\' AND user_pw = \'{1}\' '.format(user_id[0], user_id[1])
+        sqlcmd = 'SELECT *, oid FROM sources WHERE user_login = \'{0}\' AND user_pw = \'{1}\' '.format(user_id[0],
+                                                                                                       user_id[1])
         self.cursor.execute(sqlcmd)
         sources = self.cursor.fetchall()
 
@@ -74,7 +78,7 @@ class Data:
         self.cursor.execute("INSERT INTO users VALUES (:login, :password)",
                             {
                                 'login': login,
-                                'password': password
+                                'password': rsa.encrypt(password.encode(), self.keys[0])
                             })
 
         self.db.commit()
@@ -127,7 +131,10 @@ class Data:
         self.db.commit()
         self.db.close()
 
-#data = Data('')
-#for item in data.getAllSourcesById(('wssf', '1234')):
+
+# data = Data('')
+# for item in data.getAllSourcesById(('wssf', '1234')):
 #    print(item)
+
+
 

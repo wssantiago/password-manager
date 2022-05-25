@@ -52,13 +52,13 @@ class Sources:
 
     def initTopFrame(self):
         self.top_frame = Frame(self.mainFrame, bg="#41667f")
-        self.top_frame.pack(fill=X, expand=True)
+        self.top_frame.pack()
 
     def initComboBox(self):
         self.comboSearch = ttk.Combobox(self.top_frame, values=self.searchOptions, font=('Segoe UI', 13, "bold"),
                                         background="#a5b1b2", foreground="#622424")
         self.comboSearch.current(0)
-        self.comboSearch.grid(row=0, column=0, sticky='w', padx=10)
+        self.comboSearch.grid(row=0, column=0, sticky='sn', padx=10, pady=20)
 
         # TODO comboSearch.bind
 
@@ -66,23 +66,23 @@ class Sources:
         self.searchData = StringVar(self.searchBox)
         self.searchBox = Entry(self.top_frame, font=('Segoe UI', 13, "bold"), textvariable=self.searchData,
                                bg="#a5b1b2", fg="#622424")
-        self.searchBox.grid(row=0, column=1, sticky='w')
+        self.searchBox.grid(row=0, column=1, sticky='w', padx=10, pady=20)
         self.searchBox.bind("<KeyRelease>", self.update)
 
     def initCountButtons(self):
         self.add_item_button = Button(self.top_frame,
                                       text='Adicionar item',
-                                      font=('Segoe UI', 9, "bold"), command=self.insertNewEmptySource,
+                                      font=('Segoe UI', 10, "bold"), command=self.insertNewEmptySource,
                                       bg="#622323",
                                       fg="#ae8349")
-        self.add_item_button.grid(row=0, column=2, padx=10)
+        self.add_item_button.grid(row=0, column=2, padx=10, pady=20)
 
         self.remove_item_button = Button(self.top_frame,
                                          text='Remover item',
-                                         font=('Segoe UI', 9, "bold"), command=self.deleteSourceItem,
+                                         font=('Segoe UI', 10, "bold"), command=self.deleteSourceItem,
                                          bg="#622323",
                                          fg="#ae8349")
-        self.remove_item_button.grid(row=0, column=3, padx=10)
+        self.remove_item_button.grid(row=0, column=3, padx=10, pady=20)
 
     def update(self, e):
         searched = self.searchBox.get()
@@ -129,8 +129,8 @@ class Sources:
         self.table.heading('Login/e-mail', text='Login/e-mail', anchor=CENTER)
         self.table.heading('Senha', text='Senha', anchor=W)
 
-        self.table.tag_configure('oddrow', background='white')
-        self.table.tag_configure('evenrow', background="#DBEAFA")
+        self.table.tag_configure('oddrow', background='#E4ECF1')
+        self.table.tag_configure('evenrow', background="#BCCFDC")
 
         self.table.bind("<Double-Button-1>", self.editSource)
 
@@ -191,47 +191,52 @@ class Sources:
         self.editDialog = Toplevel(bg="#41667f")
         self.editDialog.grab_set()
         self.editDialog.title('source-edition')
-        self.editDialog.geometry('300x150+700+300')
+        self.editDialog.geometry('365x200+700+300')
         self.editDialog.resizable(False, False)
-        self.editDialog.grid_columnconfigure(0, weight=1)
-        self.editDialog.grid_columnconfigure(1, weight=4)
 
-        self.edit_source_label = Label(self.editDialog, text='Lugar: ', font=('Segoe UI', 9, "bold"), padx=10, pady=10,
+        self.edit_source_label = Label(self.editDialog, text='Lugar: ', font=('Segoe UI', 12, "bold"), padx=10, pady=10,
                                        bg="#41667f",
-                                       fg="#ae8349")
+                                       fg="#ae8349", width=10)
         self.edit_source_label.grid(row=0, column=0, sticky='W')
 
-        self.edit_source_entry = Entry(self.editDialog, font=('Segoe UI', 9, "bold"), bg="#a5b1b2", fg="#622424")
+        self.edit_source_entry = Entry(self.editDialog, font=('Segoe UI', 12, "bold"), bg="#a5b1b2", fg="#622424",
+                                       width=20)
         self.edit_source_entry.insert(0, values[0])
         self.edit_source_entry.grid(row=0, column=1)
 
-        self.edit_login_label = Label(self.editDialog, text='Login: ', font=('Segoe UI', 9, "bold"), padx=10, pady=10,
+        self.edit_login_label = Label(self.editDialog, text='Login: ', font=('Segoe UI', 12, "bold"), padx=10, pady=10,
                                       bg="#41667f",
-                                      fg="#ae8349")
+                                      fg="#ae8349", width=10)
         self.edit_login_label.grid(row=1, column=0, sticky='W')
 
-        self.edit_login_entry = Entry(self.editDialog, font=('Segoe UI', 9, "bold"), bg="#a5b1b2", fg="#622424")
+        self.edit_login_entry = Entry(self.editDialog, font=('Segoe UI', 12, "bold"), bg="#a5b1b2", fg="#622424",
+                                      width=20)
         self.edit_login_entry.insert(0, values[1])
         self.edit_login_entry.grid(row=1, column=1)
 
-        self.edit_pw_label = Label(self.editDialog, text='Senha: ', font=('Segoe UI', 9, "bold"), padx=10, pady=10,
+        self.edit_pw_label = Label(self.editDialog, text='Senha: ', font=('Segoe UI', 12, "bold"), padx=10, pady=10,
                                    bg="#41667f",
-                                   fg="#ae8349")
+                                   fg="#ae8349", width=10)
         self.edit_pw_label.grid(row=2, column=0, sticky='W')
 
-        self.edit_pw_entry = Entry(self.editDialog, font=('Segoe UI', 9, "bold"), bg="#a5b1b2", fg="#622424")
+        self.edit_pw_entry = Entry(self.editDialog, font=('Segoe UI', 12, "bold"), bg="#a5b1b2", fg="#622424",
+                                   width=20)
         self.edit_pw_entry.insert(0, values[2])
         self.edit_pw_entry.grid(row=2, column=1)
 
         self.edit_confirm_button = Button(self.editDialog,
-                                          text='Confirmar alteração',
-                                          font=('Segoe UI', 9, "bold"), command=self.confirmSourceEdition, padx=20)
-        self.edit_confirm_button.grid(row=3, column=0)
+                                          text='Confirmar',
+                                          font=('Segoe UI', 10, "bold"), command=self.confirmSourceEdition,
+                                          bg="#622323",
+                                          fg="#ae8349")
+        self.edit_confirm_button.grid(row=3, column=0, sticky='E', padx=15, pady=15)
 
         self.cancel_edition_button = Button(self.editDialog,
                                             text='Cancelar',
-                                            font=('Segoe UI', 9, "bold"), command=lambda: self.editDialog.destroy(), padx=20)
-        self.cancel_edition_button.grid(row=3, column=1)
+                                            font=('Segoe UI', 10, "bold"), command=lambda: self.editDialog.destroy(),
+                                            bg="#622323",
+                                            fg="#ae8349")
+        self.cancel_edition_button.grid(row=3, column=1, sticky='W', padx=10, pady=15)
 
     def confirmSourceEdition(self):
         index = self.table.selection()[0]

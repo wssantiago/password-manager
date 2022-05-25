@@ -38,7 +38,7 @@ class Login:
 
     def initLogo(self):
         parent = str(Path(os.getcwd()).parent.parent)
-        logo_filename = parent + '/images/logo.png'
+        logo_filename = parent + '/images/background.png'
         logo = Image.open(logo_filename)
         logo = logo.resize((280, 280))
         logo = ImageTk.PhotoImage(logo)
@@ -55,8 +55,8 @@ class Login:
 
         self.login_data = StringVar(self.login_input)
         self.login_data.trace('w', self.account_modified)
-        self.login_input = Entry(self.loginFrame, font=('Segoe UI', 18, "bold"), textvariable=self.login_data,
-                                 bg="#a5b1b2", fg="#622424")
+        self.login_input = Entry(self.loginFrame, font=('Segoe UI', 15, "bold"), textvariable=self.login_data,
+                                 bg="#a5b1b2", fg="#622424", width=14)
         self.login_input.grid(row=0, column=1)
 
         self.password_text = Label(self.loginFrame, text='Senha: ', font=('Segoe UI', 18, "bold"), padx=7, pady=18,
@@ -65,8 +65,8 @@ class Login:
 
         self.password_data = StringVar(self.password_input)
         self.password_data.trace('w', self.account_modified)
-        self.password_input = Entry(self.loginFrame, font=('Segoe UI', 18, "bold"), textvariable=self.password_data,
-                                    bg="#a5b1b2", fg="#622424")
+        self.password_input = Entry(self.loginFrame, font=('Segoe UI', 15, "bold"), textvariable=self.password_data,
+                                    bg="#a5b1b2", fg="#622424", width=14)
         self.password_input.grid(row=1, column=1)
 
         self.loginFrame.pack()
@@ -76,15 +76,15 @@ class Login:
 
         self.confirm_button = Button(self.buttonsFrame,
                                      text='Confirmar',
-                                     font=('Segoe UI', 18, "bold"),
+                                     font=('Segoe UI', 12, "bold"),
                                      state=DISABLED,
                                      command=self.login,
                                      bg="#622323",
-                                     fg="#ae8349")
+                                     fg="#ae8349",)
         self.confirm_button.pack(side='right')
         self.addUser_button = Button(self.buttonsFrame,
                                      text='Adicionar usuário',
-                                     font=('Segoe UI', 18, "bold"),
+                                     font=('Segoe UI', 12, "bold"),
                                      state=DISABLED,
                                      command=self.addUser,
                                      bg="#622323",

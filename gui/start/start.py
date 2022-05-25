@@ -8,6 +8,7 @@ from gui.login.login import Login
 class Start:
 
     def __init__(self):
+        self.title_label = None
         self.logo_label = None
         self.buttonFrame = None
         self.start_button = None
@@ -25,15 +26,18 @@ class Start:
 
         self.root.mainloop()
 
-
     def initLogo(self):
-        logo_filename = str(Path(os.getcwd()).parent.parent) + '/images/logo.png'
+        logo_filename = str(Path(os.getcwd()).parent.parent) + '/images/background.png'
         logo = Image.open(logo_filename)
         logo = logo.resize((280, 280))
         logo = ImageTk.PhotoImage(logo)
         self.logo_label = Label(self.mainFrame, image=logo, bg="#41667f")
         self.logo_label.image = logo
-        self.logo_label.pack()
+        self.logo_label.pack(side='left', ipadx=50)
+        
+        self.title_label = Label(self.mainFrame, text="Password \nManager", bg="#41667f", fg="#622323",
+                                 font=('Segoe UI', 18, "bold"))
+        self.title_label.place(x=155, y=50)
 
     def initButton(self):
         self.buttonFrame = Frame(self.mainFrame, bg="#41667f")
@@ -42,9 +46,9 @@ class Start:
                                    text='Iniciar!',
                                    font=('Segoe UI', 20, "bold"),
                                    command=self.start_button_click, bg="#622323", fg="#ae8349")
-        self.start_button.pack()
+        self.start_button.pack(side='right')
 
-        self.buttonFrame.pack(ipady=20, ipadx=20)
+        self.buttonFrame.pack(ipady=200)
 
     def start_button_click(self):
         for widgets in self.buttonFrame.winfo_children():
