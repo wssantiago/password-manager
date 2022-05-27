@@ -1,4 +1,5 @@
 from tkinter import *
+import rsa
 from PIL import Image, ImageTk
 from pathlib import Path
 import os
@@ -22,8 +23,15 @@ class Login:
         self.confirm_button = None
         self.addUser_button = None
 
-        self.db = Data(str(Path(os.getcwd()).parent.parent) + '/data/')
+        self.directory = str(Path(os.getcwd()).parent.parent)
+
+        self.db = Data(self.directory + '/data/')
         self.users = self.db.getUsers()
+
+        privateFile = open(self.directory + "/data/private.txt", "r")
+        privateKeyPEM = ''.join([str(item) for item in privateFile.readlines()])
+        privateFile.close()
+        self.privateKey = rsa.PrivateKey.load_pkcs1(privateKeyPEM.encode('utf-8'))
 
         self.root = start.root
 
@@ -57,6 +65,7 @@ class Login:
         self.login_data.trace('w', self.account_modified)
         self.login_input = Entry(self.loginFrame, font=('Segoe UI', 15, "bold"), textvariable=self.login_data,
                                  bg="#a5b1b2", fg="#622424", width=14)
+        self.login_input.focus()
         self.login_input.grid(row=0, column=1)
 
         self.password_text = Label(self.loginFrame, text='Senha: ', font=('Segoe UI', 18, "bold"), padx=7, pady=18,
@@ -66,7 +75,7 @@ class Login:
         self.password_data = StringVar(self.password_input)
         self.password_data.trace('w', self.account_modified)
         self.password_input = Entry(self.loginFrame, font=('Segoe UI', 15, "bold"), textvariable=self.password_data,
-                                    bg="#a5b1b2", fg="#622424", width=14)
+                                    bg="#a5b1b2", fg="#622424", width=14, show="*")
         self.password_input.grid(row=1, column=1)
 
         self.loginFrame.pack()
@@ -101,15 +110,20 @@ class Login:
         else:
             login_data = self.login_data.get()
             password_data = self.password_data.get()
-            for user in self.users:
-                login, pw, oid = user
-                if login != login_data or pw != password_data:
-                    self.confirm_button['state'] = DISABLED
-                    self.addUser_button['state'] = ACTIVE
-                else:
-                    self.confirm_button['state'] = ACTIVE
-                    self.addUser_button['state'] = DISABLED
-
+            if len(self.users) != 0:
+                for user in self.users:
+                    loginEnc, pwEnc, oid = user
+                    login = rsa.decrypt(loginEnc, self.privateKey).decode()
+                    pw = rsa.decrypt(pwEnc, self.privateKey).decode()
+                    if login != login_data or pw != password_data:
+                        self.confirm_button['state'] = DISABLED
+                        self.addUser_button['state'] = ACTIVE
+                    else:
+                        self.confirm_button['state'] = ACTIVE
+                        self.addUser_button['state'] = DISABLED
+            else:
+                self.confirm_button['state'] = DISABLED
+                self.addUser_button['state'] = ACTIVE
 
     def addUser(self):
         self.db.insertUser(self.login_data.get(), self.password_data.get())

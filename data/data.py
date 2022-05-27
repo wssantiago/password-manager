@@ -11,7 +11,15 @@ class Data:
         self.db = None
         self.cursor = None
 
-        self.keys = rsa.newkeys(512)
+        publicFile = open(path + "public.txt", "r")
+        publicKeyPEM = ''.join([str(item) for item in publicFile.readlines()])
+        publicFile.close()
+        self.publicKey = rsa.PublicKey.load_pkcs1(publicKeyPEM.encode('utf8'))
+
+        privateFile = open(path + "private.txt", "r")
+        privateKeyPEM = ''.join([str(item) for item in privateFile.readlines()])
+        privateFile.close()
+        self.privateKey = rsa.PrivateKey.load_pkcs1(privateKeyPEM.encode('utf-8'))
 
     def create_table(self, script):
         self.db = sqlite3.connect(self.path)
@@ -61,9 +69,8 @@ class Data:
         self.db = sqlite3.connect(self.path)
         self.cursor = self.db.cursor()
 
-        sqlcmd = 'SELECT *, oid FROM sources WHERE user_login = \'{0}\' AND user_pw = \'{1}\' '.format(user_id[0],
-                                                                                                       user_id[1])
-        self.cursor.execute(sqlcmd)
+        self.cursor.execute('SELECT *, oid FROM sources WHERE user_login = ? AND user_pw = ?',
+                            (user_id[0], user_id[1]))
         sources = self.cursor.fetchall()
 
         self.db.commit()
@@ -77,8 +84,8 @@ class Data:
 
         self.cursor.execute("INSERT INTO users VALUES (:login, :password)",
                             {
-                                'login': login,
-                                'password': rsa.encrypt(password.encode(), self.keys[0])
+                                'login': rsa.encrypt(str(login).encode(), self.publicKey),
+                                'password': rsa.encrypt(str(password).encode(), self.publicKey)
                             })
 
         self.db.commit()
@@ -90,9 +97,9 @@ class Data:
 
         self.cursor.execute("INSERT INTO sources VALUES (:source, :login, :password, :user_login, :user_pw)",
                             {
-                                'source': data[0],
-                                'login': data[1],
-                                'password': data[2],
+                                'source': rsa.encrypt(str(data[0]).encode(), self.publicKey),
+                                'login': rsa.encrypt(str(data[1]).encode(), self.publicKey),
+                                'password': rsa.encrypt(str(data[2]).encode(), self.publicKey),
                                 'user_login': user[0],
                                 'user_pw': user[1]
                             })
@@ -100,11 +107,14 @@ class Data:
         self.db.commit()
         self.db.close()
 
+    # TODO unable to get these users for delete
     def deleteUser(self, id):
         self.db = sqlite3.connect(self.path)
         self.cursor = self.db.cursor()
 
-        self.cursor.execute("DELETE FROM users WHERE login = ? AND password = ?", (id[0], id[1]))
+        self.cursor.execute("DELETE FROM users WHERE login = ? AND password = ?",
+                            (rsa.encrypt(str(id[0]).encode(), self.publicKey),
+                             rsa.encrypt(str(id[1]).encode(), self.publicKey)))
 
         self.db.commit()
         self.db.close()
@@ -126,15 +136,14 @@ class Data:
                             SET source = ? ,
                                 login = ? ,
                                 password = ?
-                            WHERE oid = ?''', (values[0], values[1], values[2], str(oid)))
+                            WHERE oid = ?''', (rsa.encrypt(str(values[0]).encode(), self.publicKey),
+                                               rsa.encrypt(str(values[1]).encode(), self.publicKey),
+                                               rsa.encrypt(str(values[2]).encode(), self.publicKey),
+                                               str(oid)))
 
         self.db.commit()
         self.db.close()
 
 
-# data = Data('')
-# for item in data.getAllSourcesById(('wssf', '1234')):
-#    print(item)
-
-
+#data = Data('')
 

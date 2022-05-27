@@ -1,5 +1,6 @@
 from tkinter import *
 from tkinter import ttk
+import rsa
 from PIL import Image, ImageTk
 from pathlib import Path
 import os
@@ -29,13 +30,25 @@ class Sources:
         self.searchOptions = ["Lugar", "Login/e-mail", "Senha"]
         self.comboSearch = None
 
+        self.directory = str(Path(os.getcwd()).parent.parent)
+
+        privateFile = open(self.directory + "/data/private.txt", "r")
+        privateKeyPEM = ''.join([str(item) for item in privateFile.readlines()])
+        privateFile.close()
+        self.privateKey = rsa.PrivateKey.load_pkcs1(privateKeyPEM.encode('utf-8'))
+
+        publicFile = open(self.directory + "/data/public.txt", "r")
+        publicKeyPEM = ''.join([str(item) for item in publicFile.readlines()])
+        publicFile.close()
+        self.publicKey = rsa.PublicKey.load_pkcs1(publicKeyPEM.encode('utf8'))
+
         self.root = login.root
         self.mainFrame = Frame(self.root, bg="#41667f")
         self.mainFrame.pack(fill='both', expand=True)
 
         self.usr = usr
         self.db = login.db
-        self.info = self.getInfo()
+        self.info = self.decryptInfo()
 
         self.initTopFrame()
         self.initComboBox()
@@ -44,8 +57,21 @@ class Sources:
         self.initDataFrame()
         self.initDataTable()
 
+    def decryptInfo(self):
+        info = []
+        for item in self.getInfo():
+            source = rsa.decrypt(item[0], self.privateKey).decode()
+            login = rsa.decrypt(item[1], self.privateKey).decode()
+            password = rsa.decrypt(item[2], self.privateKey).decode()
+            usr_login = item[3]
+            usr_pw = item[4]
+            info.append((source, login, password, item[3], item[4], item[5]))
+
+        return info
+
     def getInfo(self):
         return self.db.getAllSourcesById(self.usr)
+    # these returns are encrypted ^ \/
 
     def getInfoByType(self, type):
         return [item[type] for item in self.db.getAllSourcesById(self.usr)]
@@ -86,7 +112,7 @@ class Sources:
 
     def update(self, e):
         searched = self.searchBox.get()
-        infoType = self.comboSearch.current()  # 1 = source, 2 = login, 3 = senha
+        infoType = self.comboSearch.current()  # 0 = source, 1 = login, 2 = senha
 
         if searched == "":
             self.initTableItems(self.info)
@@ -167,7 +193,7 @@ class Sources:
         except FileNotFoundError:
             print('error')
 
-        self.info = self.db.getAllSourcesById(self.usr)
+        self.info = self.decryptInfo()
         self.searchBox.delete(0, END)
         self.initTableItems(self.info)
 
@@ -180,7 +206,7 @@ class Sources:
 
             self.db.deleteSourceFromUser(oid)
 
-            self.info = self.db.getAllSourcesById(self.usr)
+            self.info = self.decryptInfo()
             self.searchBox.delete(0, END)
             self.initTableItems(self.info)
 
@@ -255,6 +281,6 @@ class Sources:
                                        values[4],
                                        values[5]))
 
-        self.info = self.db.getAllSourcesById(self.usr)
+        self.info = self.decryptInfo()
 
         self.editDialog.destroy()
