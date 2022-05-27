@@ -11,6 +11,7 @@ from sources import Sources
 class Login:
 
     def __init__(self, start):
+        self.foundFlag = None
         self.user_added_success = None
         self.password_data = None
         self.login_data = None
@@ -112,16 +113,21 @@ class Login:
             login_data = self.login_data.get()
             password_data = self.password_data.get()
             if len(self.users) != 0:
+                self.foundFlag = False
                 for user in self.users:
                     loginEnc, pwEnc, oid = user
                     login = rsa.decrypt(loginEnc, self.privateKey).decode()
                     pw = rsa.decrypt(pwEnc, self.privateKey).decode()
-                    if login != login_data or pw != password_data:
-                        self.confirm_button['state'] = DISABLED
-                        self.addUser_button['state'] = ACTIVE
-                    else:
-                        self.confirm_button['state'] = ACTIVE
-                        self.addUser_button['state'] = DISABLED
+                    if login == login_data and pw == password_data:
+                        self.foundFlag = True
+                        break
+
+                if self.foundFlag:
+                    self.confirm_button['state'] = ACTIVE
+                    self.addUser_button['state'] = DISABLED
+                else:
+                    self.confirm_button['state'] = DISABLED
+                    self.addUser_button['state'] = ACTIVE
             else:
                 self.confirm_button['state'] = DISABLED
                 self.addUser_button['state'] = ACTIVE
